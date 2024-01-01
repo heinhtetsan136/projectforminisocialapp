@@ -1,20 +1,17 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:localstore/localstore.dart';
 import 'package:project/controller/album_controller.dart';
 import 'package:project/controller/feed_controller.dart';
 import 'package:project/controller/post_controller.dart';
 import 'package:project/controller/user_controller.dart';
-import 'package:project/model/album.dart';
 import 'package:project/model/photo.dart';
 import 'package:project/model/post.dart';
 import 'package:project/model/user.dart';
 import 'package:project/repositories/api.dart';
+import 'package:project/repositories/cache_respositories.dart';
 import 'package:project/view/screen/widget/image_section.dart';
-import 'package:project/view/screen/widget/my_day_card.dart';
-import 'package:project/view/screen/widget/post_action_button.dart';
 import 'package:project/view/screen/widget/post_card.dart';
-import 'package:project/view/screen/widget/profile_avartor.dart';
 import 'package:project/view/screen/widget/search.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,19 +22,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final ApiRepositories apiRepositories = ApiRepositories(dio: Dio());
+  final CacheRepostories cahe = CacheRepostories(Localstore.instance);
+
   late final FeedController controller;
+
   bool isloading = true;
   final List<UserModel> user = [];
+
   @override
   void initState() {
     super.initState();
+    final ApiRepositories apiRepositories =
+        ApiRepositories(dio: Dio(), cacheRepostories: cahe);
     controller = FeedController(
+        cacheRepostories: cahe,
         userController: UserController(api: apiRepositories),
         postController: PostController(apiRepositories),
         albumController: AlbumController(apiRepositories));
     controller.getUser().then((value) {
       user.addAll(value);
+      print("init user $user");
       isloading = false;
       setState(() {});
     });
@@ -47,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("user $user");
     var image = user.map((e) => e.album).fold(
       <PhotoModel>[],
       (previousValue, element) => [
@@ -55,6 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
             (previousValue, element) => [...previousValue, element])
       ],
     )..shuffle();
+    print("imag $image");
 
     return Scaffold(
       appBar: AppBar(

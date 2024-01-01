@@ -1,20 +1,18 @@
-
-import "package:dio/dio.dart";
-import "package:project/model/user.dart";
 import "package:project/repositories/api.dart";
-class UserController{
+
+import "../model/user.dart";
+
+class UserController {
   final ApiRepositories api;
 
+  UserController({
+    required this.api,
+  });
 
-
-  UserController({required this.api,});
-Future<List<UserModel>> getUser() async{
-  final List user= await api.get("https://jsonplaceholder.typicode.com/users");
-  // print(user);
-  return user.map(UserModel.fromJsObject).toList();
-
-}}
-    
-
-  
-  
+  Future<List<UserModel>> getUser() async {
+    final List user = await api.get(
+        "https://jsonplaceholder.typicode.com/users", "cahe_user");
+    // print(user);
+    return user.map(UserModel.fromJsObject).toList();
+  }
+}

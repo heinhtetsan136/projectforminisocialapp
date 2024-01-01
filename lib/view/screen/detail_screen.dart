@@ -22,6 +22,7 @@ class DetailScreen extends StatelessWidget {
     final coverphoto = user.album[1].photos;
     final List<PhotoModel> featurephoto = user.album.sublist(2).fold(
         [], (previousValue, element) => [...previousValue, ...element.photos]);
+    print("this is cover $coverphoto");
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -35,8 +36,9 @@ class DetailScreen extends StatelessWidget {
             child: Stack(
               children: [
                 InkWell(
-                  onTap:(){
-                    Navigator.of(context).pushNamed("/view",arguments:coverphoto);
+                  onTap: () {
+                    Navigator.of(context)
+                        .pushNamed("/view", arguments: coverphoto);
                   },
                   child: CachedNetworkImage(
                     imageUrl: coverphoto.first.url,
@@ -92,7 +94,6 @@ class DetailScreen extends StatelessWidget {
               ],
             ),
           ),
-
           ImageSection(
             photos: featurephoto,
             showCircleAvartor: false,
@@ -101,10 +102,12 @@ class DetailScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: Divider(),
           ),
-          for(int i=0;i<user.posts.length;i++)
-           PostCard(onTap: null,
-           post: user.posts[i],),
-           TheEnd(),
+          for (int i = 0; i < user.posts.length; i++)
+            PostCard(
+              onTap: null,
+              post: user.posts[i],
+            ),
+          TheEnd(),
         ],
       ),
     );

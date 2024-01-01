@@ -16,4 +16,14 @@ class CommentModel {
         email: jsobject["email"],
         body: jsobject["body"]);
   }
+  Map<String,dynamic> toMap(){
+    return {
+      "postId":postId,
+
+      "id":id,
+      "name":name,
+      "body":body,
+      "email":email,
+    };
+  }
 }
